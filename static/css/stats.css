@@ -1,0 +1,117 @@
+#statsModalContainer {
+    padding: 0 0 25px 25px;
+}
+
+.statsContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin: 20px 0 10px 0;
+    text-align: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.statsItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80px;
+}
+
+.statsValue {
+    font-family: "helvetica";
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.statsLabel {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.2;
+    text-align: center;
+    min-height: 2.4rem;
+}
+
+.statsLabel.dark {
+    color: #fff;
+}
+
+#guessDistributionChart text.dark {
+    fill: #fff;
+}
+
+.guessDistribution {
+    margin-top: 20px;
+    width: 100%;
+    position: relative;
+    align-self: center;
+}
+
+.guessDistribution text {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.google-visualization-tooltip {
+    display: none;
+}
+
+@font-face {
+    font-family: 'nyt-karnakcondensed';
+    src: url('/static/fonts/karnakcondensed-normal-700.ttf') format('truetype');
+}
+
+.statsModalHeaderMain {
+    font-family: "nyt-karnakcondensed";
+    font-weight: 500;
+    font-size: 1.6rem;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: left;
+    margin-bottom: 0;
+    margin-top: 2rem;
+    display: block;
+    color: #000;
+}
+
+
+
+.statsCloseModal {
+
+    cursor: pointer;
+    color: #000;
+    position: absolute;
+    line-height: 1;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-56%);
+}
+
+.statsCloseModal {
+    font-size: 2.5rem;
+}
+
+.statsCloseModal.dark {
+    color: #f8f8f8;
+}
+
+.statsModalHeader {
+    text-transform: uppercase;
+    font-size: 1rem;
+    color: #000;
+    margin: 0;
+}
+
+.statsModalHeader.dark {
+    color: #f8f8f8;
+}
+
+.statsModalBodyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 35px);
+}

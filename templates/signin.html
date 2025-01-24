@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}">
+</head>
+<body>
+    <div class="app">
+        <div class="signinContainer">
+            <div class="signin">
+                <h1 class="signinHeader">SIGN IN</h1>
+                <div class="signinFormContainer">
+                    <form method="POST" class="signinForm">
+                        {{ form.hidden_tag() }}
+                        <div>
+                            <label for="username" class="formInputLabel">{{ form.username.label }}</label>
+                            {{ form.username(class_="formInput", autofocus=True, placeholder="Enter your username", required=True) }}
+                        </div>
+                        <div>
+                            <label for="password" class="formInputLabel">{{ form.password.label }}</label>
+                            {{ form.password(class_="formInput", placeholder="Enter your password", autocomplete="off", required=True) }}
+                        </div>
+                    
+                        <div class="errorContainer">
+                            <div class="errorMessage">
+                                {% if message %}
+                                    {{ message }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="signinButtonContainer">
+                            <a class="signupButton" href="{{ url_for('app_routes.signup') }}">&#60; Sign Up</a>
+                            <button class="signinButton" type="submit">SIGN IN &#62;</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<div class="modal" id="settingsModal" style="display: none;">
+    <div class="modalContainer" id="settingsModalContainer">
+        <div class="modalWrapper">
+            <div class="modalHeaderContainer">
+                <h1 class="settingsModalHeader">SETTINGS</h1>
+                <span class="settingsCloseModal closeModal">&times;</span>
+            </div>
+            <div class="settingsModalBodyContainer">
+                <div class="settingOption">
+                    <div class="settingLabel">
+                        <span>Dark Theme</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkThemeToggle" class="input">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settingOption">
+                    <div class="settingLabel">
+                        <span>High Contrast Mode</span>
+                        <p class="settingSubtext">Contrast and colorblindness improvements.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="highContrastToggle" class="input">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settingOption">
+                    <div class="settingLabel">
+                        <span>Onscreen Keyboard Input Only</span>
+                        <p class="settingSubtext">
+                            Ignore key input except from the onscreen keyboard. Most helpful for users using
+                            speech recognition or other assistive devices.
+                        </p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="keyboardInputToggle" class="input">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settingsModalFooter">
+                <p>Logged in as {{ user.username }}</p>
+                <a href="{{ url_for('app_routes.signout') }}" class="signOutButton">Sign out</a>
+            </div>
+        </div>
+    </div>
+</div>

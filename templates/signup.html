@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+</head>
+<body>
+    <div class="app">
+        <div class="signupContainer">
+            <div class='signup'>
+                <h1 class="signupHeader">SIGN UP</h1>
+                <div class="signupFormContainer">
+                    <form method="POST" class="signupForm">
+                        {{ form.hidden_tag() }}
+                        <div>
+                            <label for="username" class="formInputLabel">{{ form.username.label }}</label>
+                            {{ form.username(class_="formInput", autofocus=True, placeholder="Enter your username", required=True) }}
+                        </div>
+                        <div>
+                            <label for="email" class="formInputLabel">{{ form.email.label }}</label>
+                            {{ form.email(class_="formInput", placeholder="Enter your email", required=True) }}
+                        </div>
+                        <div>
+                            <label for="password" class="formInputLabel">{{ form.password.label }}</label>
+                            {{ form.password(class_="formInput", placeholder="Enter your password", required=True) }}
+                        </div>
+                        <div>
+                            <label for="confirm_password" class="formInputLabel">{{ form.confirm_password.label }}</label>
+                            {{ form.confirm_password(class_="formInput", placeholder="Re-enter your password", required=True) }}
+                        </div>
+
+                        <div class="errorContainer">
+                            <div class="errorMessage">
+                                {% if message %}
+                                    {{ message }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class='signupButtonContainer'>
+                            <a class='signinButton' href="{{ url_for('app_routes.signin') }}">&#60; Sign In</a>
+                            <button class="signupButton" type="submit">SIGNUP &#62;</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div >
+    </div>
+</body>
+</html>

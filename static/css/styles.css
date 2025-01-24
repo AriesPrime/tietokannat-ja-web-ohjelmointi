@@ -1,0 +1,563 @@
+html {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+
+/*
+html {
+    transform: scale(1.1);
+    transform-origin: top left;
+    overflow: hidden;
+    width: 90.909%;
+    height: 90.909%;
+}*/
+
+
+body {
+    background-color: white;
+    color: #121212;
+}
+
+body.dark {
+    background-color: #121213;
+    color: white;
+}
+
+.app {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.gameContainer {
+    width: 350px;
+    margin: 0 auto;
+    height: 100%;
+    min-height: 1000px;
+    flex-direction: column;
+    animation: none;
+}
+
+.boardContainer {
+    height: 70%;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.appHeader {
+    width: 18.7rem;
+    height: 3.5rem;
+    margin: 55% auto 2rem;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    color: #000000;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+.appHeader.dark {
+    border-bottom: 1px solid #424242;
+}
+
+.appControls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+
+.appControlsButton {
+    background: transparent;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 0 0 0.3rem;
+    transition: background-color;
+}
+
+.disabled {
+    opacity: 30%;
+}
+
+.appControlsButton:not(.disabled):hover {
+    background-color: #e3e3e1;
+}
+
+.appControlsButton.dark:not(.disabled):hover {
+    background-color: #2f2f31;
+}
+
+.icon {
+    height: 32px;
+    width: 32px;
+    font-size: 1.125em;
+    text-transform: none;
+    cursor: pointer;
+}
+
+.smallIcon {
+    height: 24px;
+    width: 24px;
+    font-size: 1.125em;
+    text-transform: none;
+    vertical-align: middle;
+    display: inline-block;
+    padding: 0 5px;
+}
+
+#newGameButtonIcon {
+    height: 29px;
+    width: 29px;
+}
+
+.appControlsButton:not(.disabled) #newGameButtonIcon {
+    animation: rotate 6s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fill {
+    fill: #000;
+}
+
+.fill.dark {
+    fill: #f8f8f8;
+}
+
+.board {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+}
+
+.tile {
+    width: 3.5rem;
+    height: 3.5rem;
+    padding-bottom: 6px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: var(--default-cell-bg-color);
+    color: var(--default-cell-text-color);
+    border: 2px solid var(--default-cell-empty-border-color);
+}
+
+
+.tile.filled:not(.revealed) {
+    border: 2px solid var(--default-cell-full-border-color) !important;
+    animation: onTypeCell linear;
+    animation-duration: 0.10s;
+}
+
+@keyframes onTypeCell {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.tile.filled.correct {
+    background-color: var(--correct-cell-bg-color) !important;
+    border: 2px solid var(--correct-cell-bg-color) !important;
+}
+
+.tile.filled.present {
+    background-color: var(--present-cell-bg-color) !important;
+    border: 2px solid var(--present-cell-bg-color) !important;
+}
+
+.tile.filled.absent {
+    background-color: var(--absent-cell-bg-color) !important;
+    border: 2px solid var(--absent-cell-bg-color) !important;
+}
+
+.tile.filled.correct,
+.tile.filled.present,
+.tile.filled.absent {
+    color: #ffffff !important;
+}
+
+.tile.filled.correct.high {
+    background-color: #f5793a !important;
+    border: 2px solid #f5793a !important;
+}
+
+.tile.filled.present.high {
+    background-color: #85c0f9 !important;
+    border: 2px solid #85c0f9 !important;
+}
+
+
+.keyBoardContainer {
+    height: 30%;
+    width: 100%;
+}
+
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: -5%;
+}
+
+.keyboardRow {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.keyButton {
+    width: 39px;
+    height: 53px;
+    margin: 0 3px 0 3px;
+    border: 0;
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+    line-height: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--default-cell-text-color);
+    background-color: #d3d6da;
+}
+
+.keyButton.dark {
+    color: #f8f8f8;
+    background-color: #818384;
+}
+
+.keyButton:active {
+    background-color: #ddd;
+}
+
+.keyButton.dark:active {
+    background-color: #565758;
+}
+
+
+.enterKey,
+.backspaceKey {
+    width: 60px;
+}
+
+.backspaceKey {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: #000;
+}
+
+.game-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.backspaceKey.dark {
+    fill: #fff;
+}
+
+.enterKey {
+    font-size: 0.7rem;
+}
+
+.keyButton.correct {
+    background-color: var(--correct-cell-bg-color) !important;
+    color: white !important;
+    border-color: var(--correct-cell-bg-color) !important;
+}
+
+.keyButton.present {
+    background-color: var(--present-cell-bg-color) !important;
+    color: white !important;
+    border-color: var(--present-cell-bg-color) !important;
+}
+
+.keyButton.absent {
+    background-color: var(--absent-cell-bg-color) !important;
+    color: white !important;
+    border-color: var(--absent-cell-bg-color) !important;
+}
+
+.keyButton.correct.high {
+    background-color: #f5793a !important;
+    border-color: #f5793a !important;
+}
+
+.keyButton.present.high {
+    background-color: #85c0f9 !important;
+    border-color: #85c0f9 !important;
+}
+
+.alertContainer {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.customAlert {
+    background-color: #000000;
+    color: white;
+    padding: 12px 12px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    letter-spacing: 0;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+}
+
+.customAlert.dark {
+    background-color: #fff;
+    color: #000;
+}
+
+.customAlert.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 0;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 999;
+    overflow: hidden;
+}
+
+.modal.dark {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid #f6f7f8;
+    background-color: #Fff;
+    color: #000;
+    box-shadow: 0 4px 23px 0 rgba(0, 0, 0, .2);
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    width: 470px;
+    animation: slideIn 200ms;
+    box-sizing: border-box;
+}
+
+.modalContainer.dark {
+    border: 1px solid #1a1a1b;
+    background-color: #121213;
+    color: #f8f8f8;
+    box-shadow: 0 4px 23px 0 rgba(0, 0, 0, .2);
+}
+
+.modalContainer.slideOut {
+    animation: slideOut 200ms forwards;
+}
+
+.modalWrapper {
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: auto;
+}
+
+.modalWrapper.dark {
+    color: #f8f8f8;
+}
+
+.modalHeaderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 10px;
+    padding: 0 40px;
+    height: 2rem;
+}
+
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+}
+
+
+
+
+
+
+.shake {
+    animation: shake linear;
+    animation-duration: 500ms;
+    animation-iteration-count: 1;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0px);
+    }
+
+    10%,
+    90% {
+        transform: translateX(-2px);
+    }
+
+    20%,
+    80% {
+        transform: translateX(4px);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-8px);
+    }
+
+    40%,
+    60% {
+        transform: translateX(8px);
+    }
+
+    100% {
+        transform: translateX(0px);
+    }
+}
+
+
+
+
+
+div {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+:root {
+    --default-cell-bg-color: #ffffff;
+    --default-cell-empty-border-color: #d3d6da;
+    --default-cell-full-border-color: #878a8c;
+    --default-cell-text-color: #000000;
+    --absent-cell-bg-color: #787c7e;
+    --correct-cell-bg-color: #6aaa64;
+    --present-cell-bg-color: #c9b458;
+}
+
+
+.high {
+    --correct-cell-bg-color: #f5793a;
+    --present-cell-bg-color: #85c0f9;
+}
+
+
+.dark {
+    --color-present: var(--yellow-4);
+    --color-correct: var(--green-4);
+    --color-absent: var(--color-tone-4);
+    --tile-text-color: var(--color-tone-1);
+    --key-text-color: var(--color-tone-1);
+    --key-evaluated-text-color: var(--color-tone-1);
+    --key-bg: var(--color-tone-2);
+    --key-bg-present: var(--color-present);
+    --key-bg-correct: var(--color-correct);
+    --key-bg-absent: var(--color-absent);
+    --key-evaluated-text-color: var(--color-tone-8);
+    --key-evaluated-text-color-absent: var(--white);
+    --modal-content-bg: var(--color-tone-7);
+    --default-cell-bg-color: #121213;
+    --default-cell-empty-border-color: #3a3a3c;
+    --default-cell-full-border-color: #565758;
+    --default-cell-text-color: #ffffff;
+    --absent-cell-bg-color: #3a3a3c;
+    --correct-cell-bg-color: #538d4e;
+    --present-cell-bg-color: #b59f3b;
+}
