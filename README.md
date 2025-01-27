@@ -192,4 +192,4 @@ Tracks the distribution of guesses for each user.
 - **Leaderboard**: Add functionality to display top players and their rankings.
 - **Code Optimization**: Refactor and optimize the code for better performance and readability.
 - **Visual Enhancements**: Implement core animations to improve the game's user experience.
-- **Reponjsiveness**: Implement Responsive Web Design.
+- **Reponsiveness**: Implement Responsive Web Design.
