@@ -45,18 +45,9 @@ This is a Wordle-inspired web application built with Flask, JavaScript, and Post
    - Create a PostgreSQL database (e.g., `wordle`).
    - Configure the database connection in a `.env` file:
      ```env
-     SECRET_KEY=your-secret-key
      DATABASE_URL=postgresql://username:password@localhost/wordle
      ```
    - Initialize the database:
-
-     **Option 1: Using Flask-Migrate**:
-     ```bash
-     flask db init
-     flask db migrate -m "Initial migration"
-     flask db upgrade
-     ```
-     **Option 2: Initialise database by running init script**:
      ```bash
      python init_db.py
      ```
@@ -82,16 +73,17 @@ This is a Wordle-inspired web application built with Flask, JavaScript, and Post
 ```
 tietokannat-ja-web-ohjelmointi/
 ├── app.py                  # Main Flask application
-├── config.py               # Configuration settings
+├── db.py                   # Database connection and session setup
 ├── forms.py                # Flask-WTF forms
 ├── helpers.py              # Helper functions
-├── models.py               # Database models
 ├── routes.py               # Flask routes
-├── README.md               # Project documentation
+├── schema.sql              # SQL schema for database
 ├── words.txt               # List of valid words for the game
+├── README.md               # Project documentation
+├── requirements.txt        # Python dependencies
 ├── static/                 # Static files
 │   ├── css/                # Stylesheets
-│   │   ├── styles.css
+│   │   ├── main.css
 │   │   ├── info.css
 │   │   ├── settings.css
 │   │   ├── signin.css
@@ -109,8 +101,17 @@ tietokannat-ja-web-ohjelmointi/
 │   ├── signin.html         # Sign-in page
 │   ├── signup.html         # Sign-up page
 │   └── wordle.html         # Main Wordle game page
+├── models/                 # Modularized models
+│   ├── __init__.py         # Module initializer
+│   ├── distribution.py     # Guess distribution model
+│   ├── game.py             # Game-related model
+│   ├── leaderboard.py      # Leaderboard-related model
+│   ├── settings.py         # Settings-related model
+│   ├── stats.py            # Game statistics model
+│   └── users.py            # User-related model
 ├── venv/                   # Virtual environment
 │   └── ...                 # Virtual environment files
+
 ```
 
 ## Database Tables
@@ -191,4 +192,3 @@ Tracks the distribution of guesses for each user.
 - **Leaderboard**: Add functionality to display top players and their rankings.
 - **Code Optimization**: Refactor and optimize the code for better performance and readability.
 - **Visual Enhancements**: Implement core animations to improve the game's user experience.
-
