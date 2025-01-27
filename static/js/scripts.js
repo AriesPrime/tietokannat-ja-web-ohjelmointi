@@ -8,6 +8,7 @@ var gameOver = false;
 let darkTheme = false;
 let highContrast = false;
 let keyboardOnly = false;
+let won = false;
 
 var correctWord = "";
 
@@ -17,24 +18,39 @@ window.onload = async () => {
 
 const initializeGame = async () => {
     try {
-        const game = await fetch('/api/most_recent_game').then(res => res.json());
+        const response = await fetch('/last_game');
+        const gameData = await response.json();
+
+        if (!gameData.success) {
+            console.error("No active game found or error occurred. Starting a new game.");
+            if (gameOver === undefined || gameOver === false) {
+                gameOver = true;
+                await startNewGame();
+            }
+            return;
+        }
+
+        const game = gameData.game;
+
+        const guesses = game.guesses || [];
+
         correctWord = game.correct_word;
-        row = game.guesses.length;
+        row = guesses.length;
         gameOver = game.is_completed;
+        won = game.is_won;
 
         updateNewGameButtonState(gameOver);
-        resetBarColors();
 
         const rects = document.querySelectorAll('#guessDistributionChart rect[fill="#787c7e"]');
-        if (gameOver && rects[row - 1]) {
+        if (gameOver && won && rects[row - 1]) {
             rects[row - 1].setAttribute('fill', '#4caf50');
             rects[row - 1].setAttribute('stroke', '#4caf50');
         }
 
-        makeBoard(game);
-        makeKeyboard(game);
+        makeBoard({ ...game, guesses });
+        makeKeyboard({ ...game, guesses });
 
-        const settings = await fetch('/api/get_settings').then(res => res.json());
+        const settings = await fetch('/get_settings').then(res => res.json());
         darkTheme = settings.dark_mode;
         highContrast = settings.high_contrast;
         keyboardOnly = settings.keyboard_only;
@@ -48,6 +64,38 @@ const initializeGame = async () => {
         toggleClass("keyboard-input-only", [], keyboardOnly);
     } catch (error) {
         console.error("Error initializing game:", error);
+    }
+};
+
+
+const updateNewGameButtonState = (isCompleted) => {
+    isCompleted ? newGameButton.classList.remove("disabled") : newGameButton.classList.add("disabled")
+};
+
+const startNewGame = async () => {
+    if (!gameOver) {
+        showAlert("Game in progress");
+        return;
+    }
+
+    try {
+        const response = await fetch('/new_game', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            resetBarColors();
+            await initializeGame();
+        } else {
+            console.error(data.error);
+        }
+    } catch (error) {
+        console.error('Error starting a new game:', error);
     }
 };
 
@@ -244,7 +292,8 @@ async function processInput(e) {
         ).join("");
 
         const isValid = await validateWord(guess);
-        if (!isValid) {
+
+        if (!isValid.is_valid) {
             showAlert("Not in word list");
             shakeRow(row);
             return;
@@ -265,26 +314,31 @@ async function processInput(e) {
             row++;
             col = 0;
 
-            if (saved.game_over) {
+            if (saved.response.game_over) {
                 gameOver = true;
+                won = saved.response.is_won;
+        
                 const messages = ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"];
-                if (saved.guessCount >= 1 && saved.guessCount <= 6) {
-                    showAlert(messages[saved.guessCount - 1]);
+                if (won && saved.response.guess_count >= 1 && saved.response.guess_count <= 6) {
+                    showAlert(messages[saved.response.guess_count - 1]);
                 }
+        
                 updateNewGameButtonState(gameOver);
-                setTimeout(() => {
+        
+                setTimeout(async () => {
+                    await fetchGuessDistribution(true);
+                    if (won) {
+                        const rects = document.querySelectorAll('#guessDistributionChart rect[fill="#787c7e"]');
+                        if (rects[row - 1]) {
+                            rects[row - 1].setAttribute('fill', '#4caf50');
+                            rects[row - 1].setAttribute('stroke', '#4caf50');
+                        }
+                    }
+                    toggleClass("dark", ["#guessDistributionChart"], darkTheme);
                     openModal(modals.statsModal);
                 }, 1000);
-
-                const rects = document.querySelectorAll('#guessDistributionChart rect[fill="#787c7e"]');
-                if (rects[row - 1]) {
-                    rects[row - 1].setAttribute('fill', '#4caf50');
-                    rects[row - 1].setAttribute('stroke', '#4caf50');
-                }
             }
-        } else {
-            alert(saved.error || "Error saving the guess. Please try again.");
-        }
+        } 
     }
 }
 
@@ -315,7 +369,7 @@ const updateKeyboard = (guess, result) => {
 
 async function validateWord(word) {
     try {
-        const response = await fetch('/api/validate_word', {
+        const response = await fetch('/validate_word', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -323,8 +377,8 @@ async function validateWord(word) {
             body: JSON.stringify({ word }),
         });
 
-        const data = await response.json();
-        return data.is_valid || false;
+        const valid = await response.json();
+        return valid;
     } catch (error) {
         console.error("Error validating word:", error);
         return false;
@@ -334,7 +388,7 @@ async function validateWord(word) {
 
 const saveGuess = async (guess) => {
     try {
-        const response = await fetch('/api/save_guess', {
+        const response = await fetch('/save_guess', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -354,43 +408,14 @@ const saveGuess = async (guess) => {
 
 
 
-const updateNewGameButtonState = (isCompleted) => {
-    isCompleted ? newGameButton.classList.remove("disabled") : newGameButton.classList.add("disabled")
-};
 
-const startNewGame = async () => {
-    if (!gameOver) {
-        showAlert("Game in progress");
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/new_game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            clearGrid();
-            clearKeyboard();
-            await initializeGame();
-        } else {
-            alert(data.error);
-        }
-    } catch (error) {
-        console.error('Error starting a new game:', error);
-        alert('An error occurred. Please try again.');
-    }
-};
 
 
 const newGameButton = document.getElementById("newGameButton");
-newGameButton.addEventListener("click", startNewGame);
-
+newGameButton.addEventListener("click", (event) => {
+    event.target.blur();
+    startNewGame();
+});
 
 
 const clearGrid = () => {
@@ -502,18 +527,14 @@ const modalButtons = {
 
 const getStats = async () => {
     try {
-        const response = await fetch('/api/get_stats');
-        const data = await response.json();
+        const response = await fetch('/get_stats');
+        const stats = await response.json();
 
-        if (data.success) {
-            const stats = data.data;
-            document.getElementById("gamesPlayed").innerText = stats.games_played;
-            document.getElementById("winRate").innerText = `${Math.round(stats.win_rate * 100)}`;
-            document.getElementById("currentStreak").innerText = stats.current_streak;
-            document.getElementById("longestStreak").innerText = stats.longest_streak;
-        } else {
-            console.error("Failed to fetch stats:", data.error);
-        }
+        document.getElementById("gamesPlayed").innerText = stats.games_played;
+        document.getElementById("winRate").innerText = stats.win_rate;
+        document.getElementById("currentStreak").innerText = stats.current_streak;
+        document.getElementById("longestStreak").innerText = stats.longest_streak;
+
     } catch (error) {
         console.error("Error fetching stats:", error);
     }
@@ -578,26 +599,34 @@ google.charts.setOnLoadCallback(() => {
     fetchGuessDistribution();
 });
 
-async function fetchGuessDistribution() {
+async function fetchGuessDistribution(forceUpdate = false) {
     try {
-        const response = await fetch('/api/get_distribution');
+        if (forceUpdate) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        const response = await fetch('/get_distribution');
         const guessData = await response.json();
 
+
+
         drawChart(guessData);
+
     } catch (error) {
         console.error('Error fetching guess distribution:', error);
     }
 }
 
+
 function drawChart(guessData) {
     const data = google.visualization.arrayToDataTable([
         ['Guess', 'Distribution', { role: "style" }, { role: 'annotation' }],
-        ["1", guessData.one, '#787c7e', guessData.one],
-        ["2", guessData.two, '#787c7e', guessData.two],
-        ["3", guessData.three, '#787c7e', guessData.three],
-        ["4", guessData.four, '#787c7e', guessData.four],
-        ["5", guessData.five, '#787c7e', guessData.five],
-        ["6", guessData.six, '#787c7e', guessData.six]
+        ["1", guessData.one, '#787c7e', guessData.one || null],
+        ["2", guessData.two, '#787c7e', guessData.two || null],
+        ["3", guessData.three, '#787c7e', guessData.three || null],
+        ["4", guessData.four, '#787c7e', guessData.four || null],
+        ["5", guessData.five, '#787c7e', guessData.five || null],
+        ["6", guessData.six, '#787c7e', guessData.six || null]
     ]);
 
     const options = {
@@ -634,7 +663,7 @@ function drawChart(guessData) {
         },
         enableInteractivity: false,
         chartArea: {
-            width: '95%',
+            width: '90%',
             height: '100%',
             left: '5%',
         },
@@ -672,11 +701,11 @@ function toggleClass(className, elements, add = true) {
         keyboard_only: keyboardOnly
     };
 
-    fetch("/api/set_settings", {
+    console.log("darkTheme:", darkTheme, "highContrast:", highContrast, "keyboardOnly:", keyboardOnly);
+
+    fetch("/set_settings", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
     })
 
@@ -708,7 +737,7 @@ const darkThemeElements = [
     ".statsModalHeader",
     ".statsCloseModal",
     ".statsLabel",
-
+    ".statsModalHeaderMain"
 ];
 
 const highContrastElements = [

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
 </head>
 <body>
@@ -17,7 +17,7 @@
                         {{ form.hidden_tag() }}
                         <div>
                             <label for="username" class="formInputLabel">{{ form.username.label }}</label>
-                            {{ form.username(class_="formInput", autofocus=True, placeholder="Enter your username", required=True) }}
+                            {{ form.username(class_="formInput", placeholder="Enter your username", required=True) }}
                         </div>
                         <div>
                             <label for="email" class="formInputLabel">{{ form.email.label }}</label>
@@ -35,7 +35,11 @@
                         <div class="errorContainer">
                             <div class="errorMessage">
                                 {% if message %}
-                                    {{ message }}
+                                    <p>{{ message }}</p>
+                                {% elif form.errors %}
+                                    {% for field, errors in form.errors.items() %}
+                                        <p>{{ errors[0] }}</p>
+                                    {% endfor %}
                                 {% endif %}
                             </div>
                         </div>

@@ -1,11 +1,10 @@
-from app import app
-from models import db, User
+from db import db
 
-def init_db():
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
-        print("Database initialized successfully!")
+def initialize_database():
+    with open('schema.sql', 'r') as schema_file:
+        schema_sql = schema_file.read()
+    db.session.execute(schema_sql)
+    db.session.commit()
 
-if __name__ == "__main__":
-    init_db()
+if __name__ == '__main__':
+    initialize_database()
